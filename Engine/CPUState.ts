@@ -2,6 +2,7 @@ namespace Engine
 {
     /**
      * 此为CPU状态结构体
+     * 使用对象结构约定 而不是类 这样可以作为纯数据结构通过json传输
      */
     export interface ICPUState
     {
@@ -25,12 +26,4 @@ namespace Engine
         //Flags
         Flags:number;
     } 
-    class tt extends Number
-    {
-        public constructor(){super();}
-    }
-    function xx()
-    {
-        let x:tt=2;
-    }
 }
