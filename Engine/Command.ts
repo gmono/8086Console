@@ -332,6 +332,7 @@ namespace Engine
         {
 
         }
+        //以下为机器状态指令 可能不会放到这里
         public HLT()
         {
 
