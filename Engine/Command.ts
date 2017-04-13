@@ -242,9 +242,13 @@ namespace Engine
         {
             
         }
-        public LEA(op1:OperationValue,op2:OperationValue)
+        public LEA(op1:RegRefence,op2:MemoryRefence)
         {
 
+        }
+        public LDS(op1:RegRefence,op2:MemoryRefence)
+        {
+            
         }
     }
 }

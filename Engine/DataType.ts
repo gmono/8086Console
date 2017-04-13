@@ -79,29 +79,47 @@ namespace Engine {
     }
     /**
      * 操作数
-     * 操作数有两种类型 一种是值引用
-     * 一种是内存地址引用
-     * 内存地址引用可以获取其地址和值 
-     * 值引用只能获取值
-     * 所有对操作数的值操作都会直接反映在引用的值上
-     * 地址只能获取不能设置
      */
     export abstract class OperationValue
     {
     }
+    /**
+     * 寄存器引用
+     */
+    export class RegRefence extends OperationValue
+    {
+        public constructor(protected state:ICPUState,protected name:string)
+        {
+            super();
+            if(!(name in state)) throw "寄存器引用错误！";
+        }
+        public get Value()
+        {
+            return this.state[this.name];
+        }
+        public set Value(val:LimitNumber)
+        {
+            this.state[this.name]=val.Value;
+        }
+
+    }
+    /**
+     * 立即数引用 只读
+     */
     export class ValueRefence extends OperationValue
     {
-        /**
-         * 此为值代理
-         * 获取值时调用此函数 不提供参数 要求返回值
-         * 设置值时 调用此函数 提供参数 不要求返回值
-         */
-        public ValueAgent:(val?:LimitNumber)=>any;
-        public constructor()
+        public constructor(protected val:LimitNumber)
         {
             super();
         }
+        public get Value()
+        {
+            return this.val;
+        }
     }
+    /**
+     * 内存引用
+     */
     export class MemoryRefence extends OperationValue
     {
         public OnMemoryRead:(address:LimitNumber)=>LimitNumber;
