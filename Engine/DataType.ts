@@ -40,6 +40,41 @@ namespace Engine {
             this.num=ndata;
 
         }
+        //多位取 置函数
+        /**
+         * SetLimitBits
+         * 设置几个位
+         */
+        public SetLimitBits(start:number,end:number,val:number):void {
+            //设置几个位
+            if(this.ReadOnly) throw "错误，只读值";
+            if(start<0||start>this.limit||end>this.limit||end<start) throw "取位长度超限";
+            let tv=new DWord(true,val);
+            for(let i=start;i<=end;++i)
+            {
+                let rindex=i-start;//得到val中的索引
+                let bit=tv.GetBit(rindex);
+                if(bit>0) this.num|=1<<i;
+                else this.num&=~(1<<i);
+            }
+        }
+        /**
+         * GetLimitBits
+         * 取几个位
+         */
+        public GetLimitBits(start:number,end:number):number {
+            if(start<0||start>this.limit||end>this.limit||end<start) throw "取位长度超限";
+            let ret=0;
+            for(let i=start;i<=end;++i)
+            {
+                let rindex=i-start;
+                let bit=this.GetBit(i);
+                if(bit>0) ret|=1<<rindex;
+                else ret&=~(1<<rindex);
+            }
+            return ret;
+        }
+
         public set Value(num:number)
         {
             if(this.isreadonly) return;
@@ -64,10 +99,41 @@ namespace Engine {
         public constructor(isreadonly:boolean,num:number) {
             super(16,isreadonly,num);
         }
+        public ToBytes():Byte[]
+        {
+            return [new Byte(false,this.GetLimitBits(0,7)),new Byte(false,this.GetLimitBits(8,15))];
+        }
+        public FromBytes(data:Byte[]):void
+        {
+            this.SetLimitBits(0,7,data[0].Value);
+            this.SetLimitBits(8,15,data[1].Value);
+        }
     }
     export class DWord extends LimitNumber {
         public constructor(isreadonly:boolean,num:number) {
             super(32,isreadonly,num);
+        }
+        public ToWords():Word[]
+        {
+            return [new Word(false,this.GetLimitBits(0,15)),new Word(false,this.GetLimitBits(16,31))];
+        }
+        public FromWords(data:Word[])
+        {
+            this.SetLimitBits(0,15,data[0].Value);
+            this.SetLimitBits(16,31,data[1].Value);
+        }
+        public ToBytes():Byte[]
+        {
+            let temp=this.ToWords();
+            return temp[0].ToBytes().concat(temp[1].ToBytes());
+        }
+        public FromBytes(data:Byte[]):void
+        {
+            let w1=new Word(true,0);
+            w1.FromBytes(data);
+            let w2=new Word(true,0);
+            w2.FromBytes(data.slice(2,3));
+            this.FromWords([w1,w2]);
         }
     }
     export class MemoryAddress extends LimitNumber
