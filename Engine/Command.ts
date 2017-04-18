@@ -442,6 +442,14 @@ namespace Engine
         }
         public JG=this.JNLE;
 
+        public IN(op1:RegRefence,op2:RegRefence|ValueRefence)
+        {
+
+        }
+        public OUT(op1:RegRefence|ValueRefence,op2:RegRefence)
+        {
+            
+        }
         
     }
 }

@@ -10,18 +10,20 @@ namespace Engine
         //操作数列表
         public Ops:OperationValue[];
     }
+    export type MemoryReadFunc=(address:LimitNumber)=>LimitNumber;
+    export type MemoryWriteFunc=(address:LimitNumber,val:LimitNumber)=>void;
     /**
      * CPU行为模拟器
      */
     export class CPU
     {
         //内存读写接口
-        public OnMemoryRead:(address:LimitNumber)=>LimitNumber;
-        public OnMemoryWrite:(address:LimitNumber,val:LimitNumber)=>void;
+        public OnMemoryRead:MemoryReadFunc;
+        public OnMemoryWrite:MemoryWriteFunc;
         //端口读写接口
         public OnPortRead:(paddress:LimitNumber)=>LimitNumber;
         public OnPortWrite:(paddress:LimitNumber)=>LimitNumber;
-        protected innerState:ICPUState=<ICPUState>{};
+        public innerState:ICPUState=<ICPUState>{};
         protected NowInstruct:Instruct;//当前指令 为一个字节数组
         public constructor(initstate?:ICPUState)
         {

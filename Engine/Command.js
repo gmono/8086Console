@@ -233,6 +233,10 @@ var Engine;
         };
         Command.prototype.JNLE = function (op1, op2) {
         };
+        Command.prototype.IN = function (op1, op2) {
+        };
+        Command.prototype.OUT = function (op1, op2) {
+        };
         return Command;
     }());
     Engine.Command = Command;
