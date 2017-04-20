@@ -1,13 +1,13 @@
 namespace Engine
 {
-    //指令执行器
-    //仅做执行
+    //指令执行封装部件
+    //仅做指令执行封装 不做具体指令结构分析
     export class Command
     {
         public OnStateChanged:(state:ICPUState)=>void;
         //当执行器需要访问内存时调用
-        public OnMemoryRead:(address:LimitNumber)=>LimitNumber;
-        public OnMemoryWrite:(address:LimitNumber,val:LimitNumber)=>void;
+        public OnMemoryRead:MemoryReadFunc;
+        public OnMemoryWrite:MemoryWriteFunc;
         public constructor(public state:ICPUState)
         {
         }
