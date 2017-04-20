@@ -1,15 +1,82 @@
 namespace Engine
 {
-    //指令执行封装部件
-    //仅做指令执行封装 不做具体指令结构分析
-    export class Command
+
+    /**
+     * 表示一个指令
+     */
+    export class Instruct
     {
+        //指令名
+        public Name:string;
+        //操作数列表
+        public Ops:OperationValue[];
+    }
+    export type EUMemoryRead=(seg:LimitNumber,address:LimitNumber)=>LimitNumber;
+    export type EUMemoryWrite=(seg:LimitNumber,address:LimitNumber,val:LimitNumber)=>void;
+
+     /**
+     * 取指令回掉函数
+     * 此函数调用时指示需要取出几个字节
+     */
+    export type GetInstructFunc=(size:LimitNumber)=>Byte[];
+    /**
+     * EU 执行部件
+     * 取指令 分析指令并执行 同时对外提供单独执行指令的接口
+     */
+    export class EU
+    {
+        //取指令回调函数
+        public GetInstruct:GetInstructFunc=null;
         public OnStateChanged:(state:ICPUState)=>void;
         //当执行器需要访问内存时调用
-        public OnMemoryRead:MemoryReadFunc;
-        public OnMemoryWrite:MemoryWriteFunc;
-        public constructor(public state:ICPUState)
+        public OnMemoryRead:EUMemoryRead;
+        public OnMemoryWrite:EUMemoryWrite;
+        public constructor(protected state:ICPUState)
         {
+        }
+
+        /**
+        * 设置新的CPU状态 此函数将暂停异步循环
+        * 后重新设置state的值再继续循环
+        * @param state 新CPUState值
+        */
+        public set State(state:ICPUState)
+        {
+            //由于JS事件队列的性质 其并不需要真的去等待执行线程。。因为根本没有执行线程..
+            this.state=state;
+        }
+        /**
+         * 取EU内保存的CPU状态
+         */
+        public get State():ICPUState
+        {
+            return this.state;
+        }
+        /**
+         * 暂停 中断异步循环 保留CPU状态
+         */
+        public Pause()
+        {
+            this.stopFlag=true;
+        }
+        /**
+         * 开始执行
+         * 此方法调用后 EU将开始异步循环取指令分析执行
+         * 
+         */
+        public Start()
+        {
+            this.stopFlag=false;
+            this.Run();
+        }
+        protected stopFlag:boolean=true;
+        /**
+         * 解析指令并执行的函数
+         * 在stopFlag不为真时连续settimeout异步循环 
+         */
+        protected Run()
+        {
+
         }
         //以下为指令系统
         public MOV(op1:OperationValue,op2:OperationValue)

@@ -22,7 +22,7 @@ namespace Engine
         /**
          * 设置内存空间映射
          */
-        public SetMemoryMap(start:DWord,end:DWord,rfunc:MemoryReadFunc,wfunc:MemoryWriteFunc)
+        public SetMemoryMap(start:DWord,end:DWord,rfunc:ReadFunc,wfunc:WriteFunc)
         {
 
         }
@@ -33,7 +33,7 @@ namespace Engine
          * @param rfunc 读取函数
          * @param wfunc 写入函数
          */
-        public SetIOPort(iostart:DWord,ioend:DWord,rfunc:MemoryReadFunc,wfunc:MemoryWriteFunc)
+        public SetIOPort(iostart:DWord,ioend:DWord,rfunc:ReadFunc,wfunc:WriteFunc)
         {
 
         }
